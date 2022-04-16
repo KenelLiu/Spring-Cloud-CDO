@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdo.cloud.mapper.write.LCZoneMapper">
+  <resultMap id="BaseResultMap" type="com.cdo.cloud.entity.TLcZone">
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="mapCode" jdbcType="VARCHAR" property="mapCode" />
+    <result column="createUser" jdbcType="VARCHAR" property="createUser" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modifyUser" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="modifyTime" jdbcType="TIMESTAMP" property="modifyTime" />
+    
+    <!-- extra field -->
+    <result column="mapName" jdbcType="VARCHAR" property="mapName" />
+    <result column="fileUrl" jdbcType="VARCHAR" property="fileUrl" />   
+    <collection property="beacons" javaType="ArrayList" ofType="java.lang.String" >
+	    <id column="beacon" jdbcType="VARCHAR"/>
+    </collection>     
+    <collection property="vertexs" ofType="com.cdo.cloud.entity.TLcZoneVertex">
+	    <id column="x" jdbcType="DECIMAL" property="x" />
+	    <id column="y" jdbcType="DECIMAL" property="y" />
+    </collection>    
+  </resultMap>
+
+  <!-- 查询数据 -->
+  <sql id="selectSql">
+	SELECT t.code,t.name,t.type,t.mapCode,t.createUser,t.createTime,
+		  tlcMap.name as mapName,tlcMap.fileUrl,beacon.beacon,
+		  vertex.x,vertex.y
+	FROM T_LC_Zone t 
+		 LEFT JOIN T_LC_Map tlcMap ON (t.mapCode=tlcMap.code)
+		 LEFT JOIN T_LC_ZoneBeacon beacon ON (t.code=beacon.code)
+		 LEFT JOIN T_LC_ZoneVertex vertex ON (t.code=vertex.code)  
+  </sql>
+  <!-- 增加beacon和顶点数据 -->
+  <sql id="InsDetailSql">
+	<if test="beacons != null">
+		<foreach collection="beacons" item="item" index="index">
+			INSERT INTO T_LC_ZoneBeacon(code,beacon,sort) VALUES(#{code},#{item},#{index}) 
+			ON DUPLICATE KEY UPDATE code=#{code},beacon=#{item},sort=#{index};
+		</foreach>
+	</if>
+	<if test="vertexs != null">
+		<foreach collection="vertexs" item="item" index="index">
+			INSERT INTO T_LC_ZoneVertex(code,x,y,sort) VALUES(#{code},#{item.x},#{item.y},#{index}) 
+			ON DUPLICATE KEY UPDATE code=#{code},x=#{item.x},y=#{item.y},sort=#{index};		
+		</foreach> 
+	</if>
+  </sql>
+   <!-- 根据code删除beacon和顶点数据 -->
+  <sql id="delDetailSql">
+	Delete FROM	T_LC_ZoneBeacon WHERE code=#{code};
+	Delete FROM	T_LC_ZoneVertex WHERE code=#{code};   	
+  </sql>
+  
+  <select id="findByKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+	<include refid="selectSql"></include>
+	WHERE t.code=#{code}
+  </select>
+  
+  <insert id="add" parameterType="com.cdo.cloud.entity.TLcZone">
+	INSERT INTO T_LC_Zone(code,name,type,mapCode,createUser,createTime,modifyUser,modifyTime)
+	VALUES(#{code},#{name},#{type},#{mapCode},#{createUser},NOW(),#{modifyUser},NOW());
+	<include refid="InsDetailSql"></include>
+  </insert>  
+
+ <update id="update" parameterType="com.cdo.cloud.entity.TLcZone">
+	UPDATE T_LC_Zone SET modifyUser=#{modifyUser},modifyTime=NOW()
+	<if test="name != null">,name=#{name}</if>	
+	<if test="type != null">,type=#{type}</if>	
+	<if test="mapCode != null">,mapCode=#{mapCode}</if>
+	WHERE code=#{code};	
+	
+ 	<include refid="delDetailSql"></include>
+	<include refid="InsDetailSql"></include>
+  </update>
+
+  <delete id="deleteByKey" parameterType="java.lang.String">
+	<include refid="delDetailSql"></include>
+	DELETE  FROM T_LC_Zone WHERE code=#{code};
+  </delete>
+  
+  <select id="getCount" parameterType="com.cdo.cloud.entity.TLcZone" resultType="java.lang.Long">
+	SELECT count(*) as nCount FROM T_LC_Zone
+	<where>
+		<if test="code != null">
+			 code=#{code}
+		</if>
+		<if test="name != null">
+			AND name LIKE concat('%',#{name},'%')
+		</if>		
+	</where>
+  </select>
+  
+  <select id="getListModel" parameterType="com.cdo.cloud.entity.TLcZone" resultMap="BaseResultMap">
+	<include refid="selectSql"></include>
+	<where>
+		<if test="code != null">
+			AND t.code=#{code}
+		</if>
+		<if test="name != null">
+			AND t.name LIKE concat('%',#{name},'%')
+		</if>
+	</where>	
+	ORDER BY t.code,beacon.sort,vertex.sort limit #{page.startRecord},#{page.nPageSize}			
+  </select> 
+</mapper>

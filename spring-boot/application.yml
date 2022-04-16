@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+logging:
+  config: ./log4j2-spring.xml
+  level:
+     com.iot.bodyiot.mapper.write: debug
+app:
+  datasource:
+    write:
+      jdbc-url: jdbc:mysql://10.27.122.38:3306/bodyiot?useSSL=false&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+      username: root
+      password: abc123
+      driverClassName: com.mysql.jdbc.Driver
+      minimum-idle: 1
+      maximum-pool-size: 5
+
+upload:
+  path: d:/file/bodyiot
+  fileParentPath[0]: map
+  picMap:
+    jpg: image/jpeg
+    jpeg: image/jpeg
+    jpe: image/jpeg
+    png: image/png
+    tiff: image/tiff
+    svg: image/svg+xml
+    bmp: image/bmp
+    gif: image/gif
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB

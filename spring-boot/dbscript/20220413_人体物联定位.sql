@@ -1,0 +1,46 @@
+DROP TABLE  IF EXISTS T_LC_Map;
+DROP TABLE  IF EXISTS T_LC_Zone;
+DROP TABLE  IF EXISTS T_LC_ZoneBeacon;
+DROP TABLE  IF EXISTS T_LC_ZoneVertex;
+
+CREATE TABLE T_LC_Map(
+	`code`	VARCHAR(25)	NOT	NULL	COMMENT '地图编号',
+	`name`	VARCHAR(150)	NOT NULL	DEFAULT '' COMMENT '地图名称',
+	 `x`	 DECIMAL(10,3) NOT NULL COMMENT '地图原点x值',
+	 `y`	 DECIMAL(10,3) NOT NULL COMMENT '地图原点y值',
+	 rateX	 DECIMAL(10,3)	NOT NULL DEFAULT '1' COMMENT 'X轴比例',
+	 rateY 	 DECIMAL(10,3)	NOT NULL DEFAULT '1' COMMENT 'Y轴比例',
+	 fileUrl  VARCHAR(120) NOT NULL COMMENT '所属地图文件',
+	 createUser	VARCHAR(30) NOT NULL DEFAULT '' COMMENT '创建人',
+	 createTime DATETIME 	NOT NULL COMMENT '创建时间',
+	 modifyUser VARCHAR(30) NOT NULL DEFAULT '' COMMENT '修改人',
+	 modifyTime DATETIME 	NOT NULL COMMENT '修改时间',	 
+	 PRIMARY KEY(`code`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='地图';
+
+CREATE TABLE T_LC_Zone(
+	`code`	VARCHAR(25)	NOT NULL	COMMENT '区域编号',
+	`name`	VARCHAR(150)	NOT NULL	DEFAULT '' COMMENT '区域名称',
+	`type`  VARCHAR(10)	NOT NULL   DEFAULT '' COMMENT '区域类型:顶点/Beacon',
+	 mapCode	VARCHAR(120) NOT NULL COMMENT '所属地图,对应T_LC_Map.code',
+	 createUser	VARCHAR(30) NOT NULL DEFAULT '' COMMENT '创建人',
+	 createTime DATETIME 	NOT NULL COMMENT '创建时间',
+	 modifyUser VARCHAR(30) NOT NULL DEFAULT '' COMMENT '修改人',
+	 modifyTime DATETIME 	NOT NULL COMMENT '修改时间',	 
+	 PRIMARY KEY(`code`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='区域';
+
+CREATE TABLE T_LC_ZoneBeacon(
+	`code`	VARCHAR(25)	NOT	NULL	COMMENT '区域编号,对应T_LC_Zone.code',
+	 beacon VARCHAR(25) NOT NULL	COMMENT '基站编号,对应T_LC_Beacon.code',
+	 sort	int NOT NULL  default '1' COMMENT '排序',
+	 PRIMARY KEY(`code`,beacon)
+)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='区域Beacon数据';
+
+CREATE TABLE T_LC_ZoneVertex(
+	`code`	VARCHAR(25)	NOT	NULL	COMMENT '区域编号,对应T_LC_Zone.code',
+	 `x`	 DECIMAL(10,3) NOT NULL COMMENT 'x位置',
+	 `y`	 DECIMAL(10,3) NOT NULL COMMENT 'y位置',	
+	  sort	int NOT NULL  default '1' COMMENT '排序',
+	 PRIMARY KEY(CODE,X,Y)
+)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='区域顶点数据';

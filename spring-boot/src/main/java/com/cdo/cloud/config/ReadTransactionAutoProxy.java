@@ -31,7 +31,7 @@ public class ReadTransactionAutoProxy {
 	/**
 	 * 定义AOP拦截
 	 */
-	private static final String AOP_POINTCUT_EXPRESSION="execution(public * com.cloud.service.dao.*.*(..))";
+	private static final String AOP_POINTCUT_EXPRESSION="execution(public * com.cloud.service.read.*.*(..))";
 	
 	@Resource(name=ReadInterceptor.TX_INTERCEPTOR_NAME)
 	private TransactionInterceptor txAdvice;			
@@ -40,7 +40,7 @@ public class ReadTransactionAutoProxy {
 	 * <p>
 	 * {@link #customizeTransactionInterceptor(PlatformTransactionManager)}
 	 */
-	@Bean
+	//@Bean
 	public BeanNameAutoProxyCreator readBeanNameAutoProxyCreator() {
 		BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
 		// 设置定制的事务拦截器
@@ -60,7 +60,7 @@ public class ReadTransactionAutoProxy {
 	@Bean
 	public DefaultAdvisorAutoProxyCreator readAdvisorAutoProxyCreator(){
 		DefaultAdvisorAutoProxyCreator  advisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
-		advisorAutoProxyCreator.setAdvisorBeanNamePrefix("com.cloud.advisor.service.");
+		advisorAutoProxyCreator.setAdvisorBeanNamePrefix("com.cdo.cloud.service.read");
 		advisorAutoProxyCreator.setProxyTargetClass(true);
 		return advisorAutoProxyCreator;
 	}	

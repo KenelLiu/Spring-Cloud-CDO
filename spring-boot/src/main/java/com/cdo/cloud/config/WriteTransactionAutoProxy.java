@@ -74,7 +74,7 @@ public class WriteTransactionAutoProxy {
 	}
 	
 
-	@Bean
+	//@Bean
 	public DefaultPointcutAdvisor writePointcutAdvisor(){
 		DefaultPointcutAdvisor pointAdvisor=new DefaultPointcutAdvisor();
 		pointAdvisor.setAdvice(txAdvice);
