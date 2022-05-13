@@ -1,61 +1,6 @@
-var stompClient = null;
-
-function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
-    if (connected) {
-        $("#conversation").show();
-    }
-    else {
-        $("#conversation").hide();
-    }
-    $("#greetings").html("");
+var localUser='user2';//本机用户
+var chatUser='user1';//点对点,对方测试用户。
+var header={
+	Authorization:localUser //连接websocket时的唯一标识,列如:用户token值,1.此值用来首次连接时鉴权,2.点对点的推送. 
 }
-
-function connect() {
-	var header={Authorization:'user2'};
-	var url='http://127.0.0.1:8080/websocket/bodyiot';
-    var socket = new SockJS(url);
-    stompClient = Stomp.over(socket);
-    stompClient.connect(header, function (frame) {
-        setConnected(true);
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
-        });
-	    stompClient.subscribe('/user/topic/chat', function (message) {
-            showGreeting(message.body);
-        });           
-    });
-}
-
-function disconnect() {
-    if (stompClient !== null) {
-        stompClient.disconnect();
-    }
-    setConnected(false);
-    console.log("Disconnected");
-}
-
-function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
-}
-
-function sendPrivateName() {
-    stompClient.send("/app/sendPrivateMessage", {}, JSON.stringify({'name': $("#name").val(),'receiver':'user1'}));
-}
-
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
-}
-
-$(function () {
-    $("form").on('submit', function (e) {
-        e.preventDefault();
-    });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
-    $("#sendPrivate").click(function() { sendPrivateName(); });
-});
 

@@ -2,14 +2,13 @@
 <html>
 <head>
     <title>Hello WebSocket</title>
-
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-    <script src="js/jquery.min.js"></script>
-    <script src="js/sockjs.min.js"></script>
-    <script src="js/stomp.min.js"></script>
-    <script src="js/app-user1.js"></script>
-
+    <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link type="text/css" href="css/main.css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/sockjs.min.js"></script>
+    <script type="text/javascript" src="js/stomp.min.js"></script>
+    <script type="text/javascript" src="js/app-user1.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
@@ -30,11 +29,11 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="name">What is your name?</label>
-                    <input type="text" id="name" class="form-control" placeholder="Your name here...">
+                    <label for="mac">输入MAC:</label>
+                    <input type="text" id="mac" class="form-control" placeholder="MAC地址">
                 </div>
-                <button id="send" class="btn btn-default" type="submit">Send</button>
-                <button id="sendPrivate" class="btn btn-default" type="submit">Send Private</button>
+                <button id="pushTopic" class="btn btn-default" type="submit">推送数据</button>
+                <button id="pushQueue" class="btn btn-default" type="submit">点对点测试</button>
             </form>
         </div>
     </div>
@@ -43,7 +42,7 @@
             <table id="conversation" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Greetings</th>
+                    <th>告警列表信息</th>
                 </tr>
                 </thead>
                 <tbody id="greetings">

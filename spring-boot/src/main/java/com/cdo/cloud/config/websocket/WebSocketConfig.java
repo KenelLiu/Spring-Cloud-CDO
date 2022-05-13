@@ -22,16 +22,11 @@ import com.cdo.cloud.config.websocket.second.WebSocketMessageHandler;
 @EnableWebSocketMessageBroker	
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
-    @Autowired
-    private WebSocketMessageHandler webSocketMessageHandler; //websocket 第二种处理onOpen,onMessage
-    @Autowired
-    private WebSocketInterceptor webSocketInterceptor;//websocket开启【第二种和第三种 】方式的拦截器 
-
-    @Autowired
-    private AuthChannelInterceptor authChannelInterceptor;//websocket开启【第三种 】方式的拦截器 
+    
+    //=================开启websocket 第一种方式=============//
     /**
      * 开启websocket
-     * 第一种方式  @bean ServerEndpointExporter+{@link com.cdo.cloud.config.websocket.second.iot.bodyiot.config.websocket.IOTWebSocket}
+     * 第一种方式  @bean ServerEndpointExporter+{@link com.cdo.cloud.config.websocket.second.IOTWebSocket}
      * 
      * @return
      */
@@ -41,12 +36,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
         return new ServerEndpointExporter();
     }	
     
+    //=================开启websocket 第二种方式=============//
     /**
      * 开启websocket
      * 第二种方式: @EnableWebSocket+WebSocketConfigurer
      * 
      */
-   
+    @Autowired
+    private WebSocketMessageHandler webSocketMessageHandler; //处理消息类  类似注解onOpen,onMessage,onClose
+    
+    @Autowired
+    private WebSocketInterceptor webSocketInterceptor;//【第二种和第三种 】方式的拦截器 
+    
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
                 .addHandler(webSocketMessageHandler, "websocket/bodyiot2")
@@ -55,15 +56,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
     }
 
     /**
-     * 开启websocket
-     *第三种方式: @EnableWebSocketMessageBroker+WebSocketMessageBrokerConfigurer
+     * 开启websocket 使用强大STOMP
+     *  第三种方式: @EnableWebSocketMessageBroker+WebSocketMessageBrokerConfigurer
      * STOMP
      */
+    @Autowired
+    private AuthChannelInterceptor authChannelInterceptor;//websocket开启【第三种 】方式的拦截器 
+    
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 配置客户端尝试连接地址
         registry
-        .addEndpoint("websocket/bodyiot")
+        .addEndpoint("/websocket/bodyiot")
         .setAllowedOrigins("*")    // 配置跨域
         .withSockJS();      // 开启sockJS支持，这里可以对不支持stomp的浏览器进行兼容。
     }
@@ -75,10 +80,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
         registry.setUserDestinationPrefix("/user");
     }    
     /**
-     * 开启websocket
-     *第三种方式: @EnableWebSocketMessageBroker+WebSocketMessageBrokerConfigurer
-     * 拦截器方式2
-     *
+     * 使用通道拦截方式处理鉴权等 比 webSocketInterceptor 处理起来方便。
      * @param registration
      */
     @Override
