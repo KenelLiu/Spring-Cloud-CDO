@@ -13,8 +13,9 @@ function setConnected(connected) {
 }
 
 function connect() {
+	var groupId=2;
     var socket = new SockJS(wsUrl);
-    stompClient = Stomp.over(socket);
+    stompClient = Stomp.over(socket);	
     stompClient.connect(header, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
@@ -22,11 +23,15 @@ function connect() {
         stompClient.subscribe('/topic/alarm', function (data) {
             //showGreeting(JSON.parse(data.body).content);//解释数据
         	showGreeting(data.body);
-        });
+        },header);
+		//========订阅分组数据推送=======/
+	    stompClient.subscribe('/user/'+groupId+'/alarm', function (data) {
+            showGreeting(data.body);
+        },header);     		
         //=======此项功仅用于点对点测试==========//
 	    stompClient.subscribe('/user/queue/chat', function (data) {
             showGreeting(data.body);
-        });     	
+        },header);     	
     });
 }
 

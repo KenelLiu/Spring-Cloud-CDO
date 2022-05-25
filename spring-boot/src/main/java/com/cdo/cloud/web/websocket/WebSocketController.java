@@ -1,6 +1,7 @@
 package com.cdo.cloud.web.websocket;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +25,9 @@ public class WebSocketController {
    
 	@MessageMapping("/device/pushOne")
     public void pushOne(StompHeaderAccessor accessor,String body){
-		messagingTemplate.convertAndSend("/topic/alarm", body);
+		String groupId="2";
+		messagingTemplate.convertAndSend("/topic/alarm", body+",广播");
+		messagingTemplate.convertAndSendToUser(groupId, "/alarm",body+",分组");
     }
 	
     @MessageMapping("/person/chat") 
@@ -44,9 +47,19 @@ public class WebSocketController {
 		}	
     }
     
-    @SubscribeMapping("/subscribe/{userId}")
-    public String subscribe(@DestinationVariable String userId){
-    	logger.info("userId="+userId+",body=");
-        return "success";
+    @SubscribeMapping("/queue/chat")
+    public String subscribe(StompHeaderAccessor accessor){
+    	List<String> nativeHeader = accessor.getNativeHeader("Authorization");
+    	logger.info("body="+nativeHeader);
+        return  "subscribe /queue/chat"+" success";
     }
+    
+    @SubscribeMapping("/{tenantId}/alarm")
+    public String subscribe(@DestinationVariable String tenantId,StompHeaderAccessor accessor){
+    	List<String> nativeHeader = accessor.getNativeHeader("Authorization");
+    	logger.info("body="+nativeHeader);
+        return  "subscribe 分组 /"+tenantId+"/alarm success";
+    }
+   
+    
 }

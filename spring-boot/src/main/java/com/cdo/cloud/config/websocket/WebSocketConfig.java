@@ -3,6 +3,7 @@ package com.cdo.cloud.config.websocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -75,8 +76,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
     
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic","/queue");         
-        registry.setApplicationDestinationPrefixes("/app");      
+    	
+        registry.enableSimpleBroker("/topic","/queue","/user");    //user 用于分组 服务端推送，     queue 用户点对点
+        registry.setApplicationDestinationPrefixes("/app","/user"); //app 常规数据推送 user 触发订阅  @SubscribeMapping   
         registry.setUserDestinationPrefix("/user");
     }    
     /**
