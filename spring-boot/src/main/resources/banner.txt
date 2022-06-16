@@ -1,5 +1,0 @@
-application.version=1.0.0
-application.formatted-version=v1.0.0
-spring-boot.version=2.3.12.RELEASE
-spring-boot.formatted-version=v2.3.12.RELEASE
-application.title=CDO-Spring-Cloud

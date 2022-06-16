@@ -4,11 +4,11 @@ server:
 logging:
   config: ./log4j2-spring.xml
   level:
-     com.iot.bodyiot.mapper.write: debug
+     com.cdo.cloud.mapper.write: debug
 app:
   datasource:
     write:
-      jdbc-url: jdbc:mysql://10.27.122.38:3306/bodyiot?useSSL=false&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+      jdbc-url: jdbc:mysql://10.27.122.38:3306/bodyiot-dev?useSSL=false&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
       username: root
       password: abc123
       driverClassName: com.mysql.jdbc.Driver
@@ -33,3 +33,6 @@ spring:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
