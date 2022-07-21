@@ -92,7 +92,36 @@
 		    <artifactId>xmlbeans</artifactId>
 		    <version>3.0.1</version>
 		</dependency>
-						
+		<dependency>
+			<groupId>cdo</groupId>
+			<artifactId>spring-cdoLib</artifactId>
+			<version>3.0.0</version>
+			<exclusions>								
+				<exclusion>
+				    <groupId>xerces</groupId>
+		    		<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.springframework.boot</groupId>
+		    		<artifactId>spring-boot-starter-log4j2</artifactId>				
+				</exclusion>																	
+			</exclusions>			
+		</dependency>		
+		<dependency>
+			<groupId>cdo</groupId>
+			<artifactId>spring-cdoFramework</artifactId>
+			<version>3.0.0</version>
+			<exclusions>								
+				<exclusion>
+				    <groupId>xerces</groupId>
+		    		<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.springframework.boot</groupId>
+		    		<artifactId>spring-boot-starter-log4j2</artifactId>				
+				</exclusion>																	
+			</exclusions>			
+		</dependency>						
 	</dependencies>
 </dependencyManagement>	
 	
